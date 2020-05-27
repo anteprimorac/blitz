@@ -2,7 +2,9 @@
 
 const nextUtilsMock = {
   nextBuild: jest.fn().mockReturnValue(Promise.resolve()),
+  nextStart: jest.fn().mockReturnValue(Promise.resolve()),
 }
+
 // Quieten reporter
 jest.doMock('../src/reporter', () => ({
   reporter: {copy: jest.fn(), remove: jest.fn()},
@@ -17,12 +19,12 @@ jest.doMock('../src/resolve-bin-async', () => ({
 }))
 
 // Import with mocks applied
-import {build} from '../src/build'
-import {directoryTree} from './utils/tree-utils'
+import {prod} from '../src/prod'
+// import {directoryTree} from './utils/tree-utils'
 import mockfs from 'mock-fs'
 import {resolve} from 'path'
 
-describe('Build command', () => {
+describe('Prod command', () => {
   const rootFolder = resolve('build')
   const buildFolder = resolve(rootFolder, '.blitz-build')
   const devFolder = resolve(rootFolder, '.blitz')
@@ -30,13 +32,16 @@ describe('Build command', () => {
   beforeEach(async () => {
     mockfs({
       build: {
+        '.blitz-build': {
+          'last-build': 'k1qYFwjzdstNfempUoTbug==',
+        },
         '.now': '',
         one: '',
         two: '',
       },
     })
     jest.clearAllMocks()
-    await build({
+    await prod({
       rootFolder,
       buildFolder,
       devFolder,
@@ -50,25 +55,7 @@ describe('Build command', () => {
     mockfs.restore()
   })
 
-  it('should copy the correct files to the build folder', async () => {
-    const tree = directoryTree(rootFolder)
-    expect(tree).toEqual({
-      children: [
-        {
-          children: [
-            {name: 'blitz.config.js'},
-            {name: 'last-build'},
-            {name: 'next.config.js'},
-            {name: 'one'},
-            {name: 'two'},
-          ],
-          name: '.blitz-build',
-        },
-        {name: '.now'},
-        {name: 'one'},
-        {name: 'two'},
-      ],
-      name: 'build',
-    })
+  it('should not run build when the output ', async () => {
+    // const tree = directoryTree(rootFolder)
   })
 })
