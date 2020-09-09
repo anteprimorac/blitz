@@ -9,7 +9,7 @@
     },
     "publish": {
       "npmClient": "npm",
-      "allowBranch": ["master", "canary"],
+      "allowBranch": ["master", "canary", "publish/canary"],
       "registry": "https://npm.pkg.github.com/"
     }
   }
